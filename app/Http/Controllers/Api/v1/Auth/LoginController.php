@@ -82,7 +82,7 @@ class LoginController extends Controller
         $token = JWTAuth::getToken();
 
         if(!$token){
-            return response()->json(['error' => 'token_absent']);
+            return response()->json(['error' => 'token_absent'], 400);
         }
 
         try{
