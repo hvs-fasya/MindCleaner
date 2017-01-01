@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
