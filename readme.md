@@ -1,27 +1,89 @@
-# Laravel PHP Framework
+# MindCleaner API
+### Запросы к методам делаем с префиксом api/v1 
+v1 - номер версии
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+## Laravel Documentation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Documentation for the Laravel framework can be found on the [Laravel website](http://laravel.com/docs).
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+##Authentification
+### Workflow:   
+1. get_access_token - POST запросом с парой email+пароль получаем acces_token и сохраняем его на устройстве. Время жизни acces_token'а - 60 минут
+2. делаем запросы к защищенным зонам api, access_token передаем либо в качестве параметра в строке GET-запроса, либо в Заголовке Authorization в виде "Bearer 'access_token'"
+3. если access_token валидный, но expired, на клиенте можно вызвать функцию refresh_token и получить в ответ новый access_token (таким образом, если делать это автоматически по получении ответа expired, юзеру при регулярном использовании приложения месяцами можно не вводить свой пароль)
+4. expired acess_token может быть refreshed в течение 2 недель с момента выдачи access_token'а
+5. при вызове метода logout(), переданный в этом запросе access_token будет перемещен в blacklist. В БД будет сделана запись о том, что этот access_token обновлению не подлежит.
+6. могут быть выданы несколько access_token'ов для одного юзера (например, для нескольких устройств). Каждый acess_token протухает и refresh'ится самостоятельно.
 
-## Official Documentation
+### Possible token errors
+{
+  "error": "token_invalid"
+}
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+{
+  "error": "token_expired"
+}
 
-## Contributing
+{
+  "error": "token_not_provided"
+}
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+{
+  "error": "token_absent"
+}
 
-## Security Vulnerabilities
+### function: get_access_token
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+method: POST    
+parameters:     
+(string) email, (string) password   
+return: (string) token
 
-## License
+request example:    
+http://localhost:8000/api/v1/get_access_token  
+form-data:      
+    email:      "example@example.com"   
+    password:    "password"     
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+successfull responce example:   
+{   
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak"  
+}
+
+error responce example:     
+{   
+  "error": "invalid_credentials"   
+}
+status: 401 Unauthorized    
+
+{   
+  "error": "could_not_create_token"    
+}   
+status: 500 Internal Server Error   
+
+### function: refresh_token
+
+method: GET    
+parameters: no parameters
+  
+return: (string) token
+
+request example:    
+http://localhost:8000/api/v1/refresh_token?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+
+successfull responce example:   
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL3YxXC9yZWZyZXNoX3Rva2VuIiwiaWF0IjoxNDgzMjkwOTYzLCJleHAiOjE0ODMyOTcxOTMsIm5iZiI6MTQ4MzI5NjU5MywianRpIjoiYzVkY2E1NGFlNGFiYWMzNjRlNmQ5M2U5Yjg1NTcwYjQifQ.u4_qWGcoo_c08zxRhAXONu_McEAq3HyEPL4ohBy-JSo"
+}
+
+error responce example:     
+{
+  "error": "token_invalid"
+}
+status: 400 Bad Request
+
+{
+  "error": "token_absent"
+}
+status: 400 Bad Request
+

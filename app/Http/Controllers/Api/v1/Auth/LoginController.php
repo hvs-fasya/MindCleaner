@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api\v1\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -82,7 +82,7 @@ class LoginController extends Controller
         $token = JWTAuth::getToken();
 
         if(!$token){
-            return response()->json(['error' => 'token_absent']);
+            return response()->json(['error' => 'token_absent'], 400);
         }
 
         try{
