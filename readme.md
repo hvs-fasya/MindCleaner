@@ -1,8 +1,8 @@
 # MindCleaner API
 ### Запросы к методам делаем с префиксом api/v1 
-v1 - номер версии
+**v1** - номер версии
 
-## Laravel Documentation
+### Laravel Documentation
 
 Documentation for the Laravel framework can be found on the [Laravel website](http://laravel.com/docs).
 
@@ -34,23 +34,22 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 
 ### function: get_access_token
 
-method: POST    
-parameters:     
-(string) email, (string) password   
-return: (string) token
+**method:** POST    
+**parameters:**     (string) email, (string) password   
+**return:** (string) token
 
-request example:    
+**request example:**    
 http://localhost:8000/api/v1/get_access_token  
-form-data:      
+**form-data:**      
     email:      "example@example.com"   
     password:    "password"     
 
-successfull responce example:   
+**successfull responce example:**   
 {   
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak"  
 }
 
-error responce example:     
+**error responce example:**     
 {   
   "error": "invalid_credentials"   
 }
@@ -63,27 +62,53 @@ status: 500 Internal Server Error
 
 ### function: refresh_token
 
-method: GET    
-parameters: no parameters
+**method:** GET    
+**parameters:** no parameters
   
-return: (string) token
+**return:** (string) token
 
-request example:    
+**request example:**    
 http://localhost:8000/api/v1/refresh_token?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
 
-successfull responce example:   
+**successfull responce example:**   
 {
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL3YxXC9yZWZyZXNoX3Rva2VuIiwiaWF0IjoxNDgzMjkwOTYzLCJleHAiOjE0ODMyOTcxOTMsIm5iZiI6MTQ4MzI5NjU5MywianRpIjoiYzVkY2E1NGFlNGFiYWMzNjRlNmQ5M2U5Yjg1NTcwYjQifQ.u4_qWGcoo_c08zxRhAXONu_McEAq3HyEPL4ohBy-JSo"
 }
 
-error responce example:     
+**error responce example:**     
 {
   "error": "token_invalid"
-}
+}   
 status: 400 Bad Request
 
 {
   "error": "token_absent"
+}   
+status: 400 Bad Request
+
+### function: logout
+
+**method:** GET    
+**parameters:** no parameters
+  
+**return:** (string) result
+
+**request example:**    
+http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+
+**successfull responce example:**   
+{   
+  "result": "success"   
 }
+
+**error responce example:**     
+{
+  "error": "token_invalid"
+}   
+status: 400 Bad Request
+
+{
+  "error": "token_absent"
+}   
 status: 400 Bad Request
 
