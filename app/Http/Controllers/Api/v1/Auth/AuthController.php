@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\v1\Auth;
 
+use App\User;
+use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -34,10 +36,37 @@ class AuthController extends Controller
 //        $this->middleware('guest', ['except' => 'logout']);
     }
 
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|confirmed',
+            'sex' => 'required|in:"f","m"',
+            'phone' => 'numeric|max:32',
+        ]);
+    }
+
     public function get_access_token(Request $request)
     {
         // grab credentials from the request
         $credentials = $request->only('email', 'password');
+
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email|max:255',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->messages()], 422);
+        }
 
         try {
             // attempt to verify the credentials and create a token for the user
@@ -97,7 +126,7 @@ class AuthController extends Controller
 
     }
 
-    public function logout()
+    public function logout_remote()
     {
         $token = JWTAuth::getToken();
 
@@ -115,5 +144,36 @@ class AuthController extends Controller
         }
 
         return response()->json(['result' => 'success']);
+    }
+
+    public function register_remote(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->messages()], 422);
+        }
+
+        try{
+            $user = new User;
+            $user->fill($request->all());
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            $credentials = $request->only('email', 'password');
+
+            $token = JWTAuth::attempt($credentials);
+
+        } catch (JWTException $e) {
+            // something went wrong whilst attempting to encode the token
+            return response()->json(['error' => 'could_not_create_token'], 500);
+
+        } catch (\Exception $e) {
+            // something went wrong whilst user register
+            return response()->json(['error' => 'could_not_register_user'], 500);
+        }
+
+        return response()->json(compact('token'));
     }
 }
