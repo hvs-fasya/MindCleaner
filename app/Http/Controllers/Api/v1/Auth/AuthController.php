@@ -99,6 +99,21 @@ class AuthController extends Controller
 
     public function logout()
     {
+        $token = JWTAuth::getToken();
 
+        if(!$token){
+            return response()->json(['error' => 'token_absent'], 400);
+        }
+
+        try{
+
+            JWTAuth::invalidate($token);
+
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
+
+            return response()->json(['error' => 'token_invalid'], $e->getStatusCode());
+        }
+
+        return response()->json(['result' => 'success']);
     }
 }
