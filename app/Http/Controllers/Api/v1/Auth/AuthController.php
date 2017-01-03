@@ -10,7 +10,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-
+//todo: resetPassword functionality
+//todo: mail notifier for register and so on events
 class AuthController extends Controller
 {
     /*

@@ -6,7 +6,18 @@
 
 Documentation for the Laravel framework can be found on the [Laravel website](http://laravel.com/docs).
 
-##Authentification
+### Methods list
+
+### Authentification
+**_get_access_token_**    
+**_refresh_token_**   
+**_logout_remote_**   
+**_register_remote_**     
+**_update_user_remote_**      
+
+
+## Authentification
+
 ### Workflow:   
 1. get_access_token - POST запросом с парой email+пароль получаем acces_token и сохраняем его на устройстве. Время жизни acces_token'а - 60 минут
 2. делаем запросы к защищенным зонам api, access_token передаем либо в качестве параметра в строке GET-запроса, либо в Заголовке Authorization в виде "Bearer 'access_token'"
@@ -15,22 +26,18 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 5. при вызове метода logout(), переданный в этом запросе access_token будет перемещен в blacklist. access_token'ы из черного списка обновлению не подлежит.
 6. могут быть выданы несколько access_token'ов для одного юзера (например, для нескольких устройств). Каждый acess_token протухает и refresh'ится самостоятельно.
 
+### todo: 
+resetPassword functionality     
+mail notifiers for register and so on events
+
 ### Possible token errors
-{
-  "error": "token_invalid"
-}
+{"error": "token_invalid"}
 
-{
-  "error": "token_expired"
-}
+{"error": "token_expired"}
 
-{
-  "error": "token_not_provided"
-}
+{"error": "token_not_provided"}
 
-{
-  "error": "token_absent"
-}
+{"error": "token_absent"}
 
 ### function: get_access_token
 
@@ -105,19 +112,13 @@ status: 400 Bad Request
 http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
 
 **successfull responce example:**   
-{   
-  "result": "success"   
-}
+{"result": "success"}   
 
 **error responce example:**     
-{
-  "error": "token_invalid"
-}   
+{"error": "token_invalid"}   
 status: 400 Bad Request
 
-{
-  "error": "token_absent"
-}   
+{"error": "token_absent"}   
 status: 400 Bad Request
 
 ### function: register_remote
@@ -192,7 +193,5 @@ http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.e
 }   
 status: 422 Unprocessable Entity    
 
-{   
-    "error":"could_not_update_user"     
-}   
+{"error":"could_not_update_user"}     
 status: 500 Internal Server Error
