@@ -127,7 +127,7 @@ status: 400 Bad Request
     (string) email, - required|email|max:255|unique:users   
     (string) password, - required|min:6|confirmed   
     (string) password_confirmation,     
-    (string) fio, - required|max:255    
+    (string) name, - required|max:255    
     (string) sex - required|in:"f","m"  
     (string) phone - numeric|max:32
   
@@ -139,7 +139,7 @@ http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.e
     email:      "example@example.com"   
     password:    "123456"   
     password_confirmation: "123456" 
-    "fio":      "fio",  
+    "name":      "name",  
     "sex":      "f",    
     "phone":    "79161234567"   
       
@@ -157,3 +157,42 @@ http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.e
 }   
 status: 422 Unprocessable Entity
 
+## function: update_user_remote
+(access_token обновлять не нужно)     
+
+**method:** POST    
+**parameters:**     
+    (string) email, - email|max:255|unique:users->ignore(user_id)  
+    (string) password, - min:6|confirmed   
+    (string) password_confirmation,     
+    (string) name, - max:255    
+    (string) sex - in:"f","m"  
+    (string) phone - numeric|max:32
+  
+**return:** (string) token  
+
+**request example:**    
+http://localhost:8000/api/v1/logout?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+**form-data:**      
+    email:      "example@example.com"   
+    password:    "123456"   
+    password_confirmation: "123456" 
+    "name":      "name",  
+    "sex":      "f",    
+    "phone":    "79161234567"   
+      
+**successfull responce example:**   
+{"result":"success"}    
+
+**error responce example:**     
+{   
+    "error":{      
+        "password":["The password confirmation does not match."]    
+        }   
+}   
+status: 422 Unprocessable Entity    
+
+{   
+    "error":"could_not_update_user"     
+}   
+status: 500 Internal Server Error
