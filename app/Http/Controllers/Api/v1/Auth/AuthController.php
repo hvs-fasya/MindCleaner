@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1\Auth;
 
 use App\User;
 use Validator;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -175,5 +176,36 @@ class AuthController extends Controller
         }
 
         return response()->json(compact('token'));
+    }
+
+    public function update_user_remote(Request $request)
+    {
+        if (! $user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['user_not_found'], 404);
+            }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'max:255',
+            'email' => ['email','max:255',Rule::unique('users')->ignore($user->id)],
+            'password' => 'min:6|confirmed',
+            'sex' => 'in:"f","m"',
+            'phone' => 'numeric|max:32',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(['error' => $validator->errors()->messages()], 422);
+        }
+
+        try{
+            $user->fill($request->all());
+            $user->password = bcrypt($request->password);
+            $user->save();
+        } catch (\Exception $e) {
+            // something went wrong whilst user register
+            return response()->json(['error' => 'could_not_update_user'], 500);
+        }
+
+        return response()->json(['result' => 'success']);
     }
 }

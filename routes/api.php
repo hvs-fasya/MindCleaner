@@ -23,7 +23,8 @@ Route::group([
         ], function () {
 
     Route::get('logout_remote', 'Api\v1\Auth\AuthController@logout_remote');
+    Route::post('update_user_remote', 'Api\v1\Auth\AuthController@update_user_remote');
     Route::get('user', function () {
-        return 'authenticated';
+        return 'authenticate';
     });
 });
