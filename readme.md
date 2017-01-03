@@ -28,7 +28,8 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 
 ### todo: 
 resetPassword functionality     
-mail notifiers for register and so on events
+mail notifiers for register and so on events    
+'passport' for application - not to allow somebody else register user   
 
 ### Possible token errors
 {"error": "token_invalid"}
