@@ -27,6 +27,7 @@ Route::group([
     //event_types
     Route::get('get_event_types_remote', 'Api\v1\EventTypeController@get_event_types_remote');
     Route::post('add_event_type_remote', 'Api\v1\EventTypeController@add_event_type_remote');
+    Route::delete('destroy_event_type_remote/{id?}/{description?}', 'Api\v1\EventTypeController@destroy_event_type_remote');
     //spheres
     //events
     Route::get('user', function () {
