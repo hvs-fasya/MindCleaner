@@ -13,8 +13,12 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 **_refresh_token_**   
 **_logout_remote_**   
 **_register_remote_**     
-**_update_user_remote_**      
-
+**_update_user_remote_**  
+    
+### Event Types
+**_get_event_types_remote_**    
+**_add_event_type_remote_**     
+**_destroy_event_type_remote_**     
 
 ## Authentification
 
@@ -250,14 +254,14 @@ status: 500 Internal Server Error
 **method:** POST    
 **parameters:**     
     (string) description - required|max:255|unique for this user and commons  
-  
+    
 **return:** (object) new event_type  
 
 **request example:**    
-http://localhost:8000/api/v1/add_event_type_remote  
+http://localhost:8000/api/v1/add_event_type_remote       
 **form-data:**      
-    description:      "new event type"     
-      
+    description:      "new event_type"     
+            
 **successfull responce example:**   
 {   
     "event_type":{
@@ -280,6 +284,57 @@ status: 422 Unprocessable Entity
         "description":["The description has already been taken."]   
      }  
 }   
+status: 422 Unprocessable Entity    
+
+{"error":"could_not_add_event_type"}     
+status: 500 Internal Server Error
+
+## function: destroy_event_type_remote      
+
+**method:** DELETE    
+**parameters:**     
+    (integer) event_type_id - required|integer
+    (string) description - required|max:255  
+  
+**return:**   (string) result   
+
+**request example:**    
+http://localhost:8000/api/v1/destroy_event_type_remote/27/new test event type   
+
+**successfull responce example:**   
+{   
+    "warning":"need_to_synchronize_event_types",    
+    "result":"success"  
+}   
+warning возникает если совпадает description и user_id но почему-то не совпадает id самого event_type   
+при этом, наверное, сдедует запросить свежие данные - get_event_types_remote    
+несмотря на warning найденная запись удаляется      
+
+{"result":"success"}   
+
+**error responce example:**     
+
+{   
+     "error":{  
+        "description":["The description field is required."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "id":["The id must be an integer"]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"event_type_not_found"}    
+status: 404 Not Found   
+
+{"error":"can_not_destroy_common_event_type"}   
+status: 422 Unprocessable Entity    
+
+{"error":"can_not_destroy_alien_event_type"}  
 status: 422 Unprocessable Entity    
 
 {"error":"could_not_add_event_type"}     
