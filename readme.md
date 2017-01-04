@@ -197,3 +197,90 @@ status: 422 Unprocessable Entity
 
 {"error":"could_not_update_user"}     
 status: 500 Internal Server Error
+
+## Event Types
+
+## get_event_types_remote
+
+**method:** GET    
+*parameters:**     no parameters    
+**return:** (array) event_types
+
+**request example:**    
+http://localhost:8000/api/v1/et_event_types_remote?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+
+**successfull responce example:**   
+{   
+  "event_types": [  
+    {   
+      "description": "Негативные и навязчивые мысли",   
+      "common": true    - аттрибут является ли этот вид события общим
+    },  
+    {   
+      "description": "Навязчивые и негативные воспоминания",    
+      "common": true    
+    },  
+    {   
+      "description": "Неправильные поступки",   
+      "common": true    
+    },  
+    {   
+      "description": "Слова паразиты",  
+      "common": true    
+    },  
+    {   
+      "description": "Вредные привычки",    
+      "common": true    
+    }   
+  ]     
+}  
+
+**error responce example:**     
+{"error": "token_invalid"}   
+status: 400 Bad Request
+
+{"error": "token_not_provided"}   
+status: 400 Bad Request
+
+{"error":"could_not_get_event_types"}     
+status: 500 Internal Server Error   
+
+## function: add_event_type_remote      
+
+**method:** POST    
+**parameters:**     
+    (string) description - required|max:255|unique for this user and commons  
+  
+**return:** (object) new event_type  
+
+**request example:**    
+http://localhost:8000/api/v1/add_event_type_remote  
+**form-data:**      
+    description:      "new event type"     
+      
+**successfull responce example:**   
+{   
+    "event_type":{
+        "id":26,    
+        "description":"one more test event type",   
+        "common":false   
+     }  
+}      
+
+**error responce example:**     
+{   
+    "error":{   
+        "description":["The description field is required."]    
+    }   
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "description":["The description has already been taken."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"could_not_add_event_type"}     
+status: 500 Internal Server Error

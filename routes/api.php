@@ -24,6 +24,11 @@ Route::group([
 
     Route::get('logout_remote', 'Api\v1\Auth\AuthController@logout_remote');
     Route::post('update_user_remote', 'Api\v1\Auth\AuthController@update_user_remote');
+    //event_types
+    Route::get('get_event_types_remote', 'Api\v1\EventTypeController@get_event_types_remote');
+    Route::post('add_event_type_remote', 'Api\v1\EventTypeController@add_event_type_remote');
+    //spheres
+    //events
     Route::get('user', function () {
         return 'authenticate';
     });
