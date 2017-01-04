@@ -11,6 +11,9 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        Schema::table('events', function ($table) {
+            $table->dropForeign(['user_id']);
+        });
         DB::table('users')->truncate();
         DB::table('users')->insert([
             'name' => 'hvs-fasya',
@@ -19,5 +22,10 @@ class UsersTableSeeder extends Seeder
             'sex' => 'f',
             'is_admin' => true
         ]);
+        Schema::table('events', function ($table) {
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade');
+        });
     }
 }
