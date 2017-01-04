@@ -34,7 +34,7 @@ class EventTypeController extends Controller
                 return response()->json(['user_not_found'], 404);
             }
         try{
-            $event_types = DB::table('event_types')->select('id','description','user_id')
+            $event_types = DB::table('event_types')->select('id','description','user_id', 'updated_at')
                 ->whereNull('user_id')
                 ->orWhere('user_id',$user->id)
                 ->get();
@@ -44,7 +44,8 @@ class EventTypeController extends Controller
                 $result[] = array(
                     'id' => $event_type->id,
                     'description' => $event_type->description,
-                    'common' => $common
+                    'common' => $common,
+                    'updated_at' => $event_type->updated_at
                 );
             }
         } catch (\Exception $e) {
@@ -131,6 +132,58 @@ class EventTypeController extends Controller
         } catch (\Exception $e) {
             // something went wrong
             return response()->json(['error' => 'could_not_destroy_event_type'], 500);
+        }
+    }
+
+    public function update_event_type_remote(Request $request)
+    {
+        if (! $user = JWTAuth::parseToken()->authenticate()) {
+            return response()->json(['user_not_found'], 404);
+        }
+        $input_data = $request->only('id','old_description','new_description');
+
+        $validator = Validator::make($input_data, [
+            'old_description' => 'required|max:255',
+            'new_description' => 'required|max:255',
+            'id' => 'required|integer'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->messages()], 422);
+        }
+        $id=$request->id;
+        $old_description = $request->old_description;
+        $new_description = $request->new_description;
+
+        try {
+            $db_event_types = DB::table('event_types')->select('id', 'user_id')
+                ->where('description', $old_description)
+                ->get();
+            //не должно быть - иначе это ошибка в работе приложения
+            if ($db_event_types->isEmpty()) {
+                return response()->json(['error' => 'event_type_not_found'], 404);
+            }
+            if (!$db_event_types->where('id', $id)->where('user_id', $user->id)->isEmpty()) {
+                DB::table('event_types')->where('id', $id)->update(['description' => $new_description]);
+                return response()->json(['result' => 'success']);
+            }
+            //не должно быть - иначе это ошибка в работе приложения
+            if (!$db_event_types->where('id', $id)->where('user_id', null)->isEmpty()) {
+                return response()->json(['error' => 'can_not_update_common_event_type'], 422);
+            }
+            //не должно быть - иначе это ошибка в работе приложения
+            if (!$db_event_types->where('id', $id)->where('user_id', '<>', $user->id)->isEmpty()) {
+                return response()->json(['error' => 'can_not_update_alien_event_type'], 422);
+            }
+            //не должно быть - иначе это ошибка синхронизации сервера с приложением
+            if ($event_type = $db_event_types->where('id','<>', $id)->where('user_id', $user->id)->first()) {
+                DB::table('event_types')->where('id', $event_type->id)->update(['description' => $new_description]);
+                return response()->json(['warning' => 'need_to_synchronize_event_types', 'result' => 'success']);
+            }
+            //не должно быть по идее, но вдруг
+            return response()->json(['error' => 'could_not_update_event_type', 'warning' => 'try_to_synchronize'], 500);
+        } catch (\Exception $e) {
+            // something went wrong
+            return response()->json(['error' => 'could_not_update_event_type'], 500);
         }
     }
 }

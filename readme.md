@@ -18,7 +18,8 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 ### Event Types
 **_get_event_types_remote_**    
 **_add_event_type_remote_**     
-**_destroy_event_type_remote_**     
+**_destroy_event_type_remote_**   
+**_update_event_type_remote_**
 
 ## Authentification
 
@@ -217,24 +218,40 @@ http://localhost:8000/api/v1/et_event_types_remote?query=eyJ0eXAiOiJKV1QiLCJhbGc
 {   
   "event_types": [  
     {   
+      "id": 1,    - значение id на сервере
       "description": "Негативные и навязчивые мысли",   
-      "common": true    - аттрибут является ли этот вид события общим
+      "common": true,    - аттрибут является ли этот вид события общим   
+      "updated_at": null    
     },  
     {   
+      "id": 2,    
       "description": "Навязчивые и негативные воспоминания",    
-      "common": true    
+      "common": true,    
+      "updated_at": null    
     },  
     {   
+      "id": 3,    
       "description": "Неправильные поступки",   
-      "common": true    
+      "common": true,   
+      "updated_at": null    
     },  
     {   
+      "id": 4,    
       "description": "Слова паразиты",  
-      "common": true    
+      "common": true,    
+      "updated_at": null
     },  
     {   
+      "id": 5,    
       "description": "Вредные привычки",    
-      "common": true    
+      "common": true,    
+      "updated_at": null
+    },   
+    {
+       "id": 26,    
+       "description": "one more  test event type",      
+       "common": false,     
+       "updated_at": "2017-01-04 14:04:46"      
     }   
   ]     
 }  
@@ -337,5 +354,64 @@ status: 422 Unprocessable Entity
 {"error":"can_not_destroy_alien_event_type"}  
 status: 422 Unprocessable Entity    
 
-{"error":"could_not_add_event_type"}     
+{"error":"could_not_destroy_event_type"}     
+status: 500 Internal Server Error   
+
+## function: update_event_type_remote      
+
+**method:** POST    
+**parameters:**     
+    (integer) event_type_id - required|integer
+    (string) old_description - required|max:255  
+    (string) new_description - required|max:255  
+  
+**return:**   (string) result   
+
+**request example:**    
+http://localhost:8000/api/v1/update_event_type_remote 
+**form-data:**      
+     id:      26    
+     old_description: "Мысли о лишнем и недостаточном весе" 
+     new_description: "event type updated"
+    
+**successfull responce example:**   
+{   
+    "warning":"need_to_synchronize_event_types",    
+    "result":"success"  
+}   
+warning возникает если совпадает old_description и user_id но почему-то не совпадает id самого event_type   
+при этом, наверное, сдедует запросить свежие данные - get_event_types_remote    
+несмотря на warning найденная запись update'тся       
+
+{"result":"success"}   
+
+**error responce example:**     
+
+{   
+     "error":{  
+        "description":["The old description field is required."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "id":["The id must be an integer"]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"event_type_not_found"}    
+status: 404 Not Found   
+
+{"error":"can_not_update_common_event_type"}   
+status: 422 Unprocessable Entity    
+
+{"error":"can_not_update_alien_event_type"}  
+status: 422 Unprocessable Entity    
+
+{   
+    "error":"could_not_update_event_type",    
+    "warning":"try_to_synchronize"
+}     
 status: 500 Internal Server Error
