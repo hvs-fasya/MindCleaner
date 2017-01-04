@@ -15,6 +15,8 @@ class CreateSpheresTable extends Migration
     {
         Schema::create('spheres', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('description');
+            $table->integer('user_id')->nullable()->unsigned();
             $table->timestamps();
         });
     }
