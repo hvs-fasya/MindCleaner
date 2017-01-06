@@ -37,6 +37,7 @@ Route::group([
     Route::post('update_sphere_remote',
         'Api\v1\SphereController@update_sphere_remote');
     //events
+    Route::post('add_event_remote', 'Api\v1\EventController@add_event_remote');
     Route::get('user', function () {
         return 'authenticate';
     });
