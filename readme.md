@@ -25,7 +25,10 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 **_get_spheres_remote_**    
 **_add_sphere_remote_**     
 **_destroy_sphere_remote_**   
-**_update_sphere_remote_**
+**_update_sphere_remote_**  
+
+### Events
+**_add_event_remote_**    
 
 ## Authentification
 
@@ -640,4 +643,64 @@ status: 422 Unprocessable Entity
     "error":"could_not_update_sphere",    
     "warning":"try_to_synchronize"
 }     
+status: 500 Internal Server Error   
+
+## Events
+
+### todo:    
+softDelete      
+
+## function: add_event_remote      
+
+**method:** POST    
+**parameters:**     
+    (string) description - required|string|unique for this user and commons      
+    (boolean) selected - boolean|nullable   
+    (string) sphere_description - string|nullable   
+    (string) event_type_descriptions - array|nullable   
+    
+**return:** (object) new event  
+
+**request example:**    
+http://localhost:8000/api/v1/add_event_remote       
+**form-data:**      
+    description:      "test event"     
+    selected:         1     
+    event_type_descriptions[0]: event type updated      
+    event_type_descriptions[1]: Чувство вины    
+    event_type_descriptions[2]: Обжорство    
+    sphere_description: sphere updated      
+            
+**successfull responce example:**   
+{   
+    "sphere_warning":"could_not_attach_sphere",     
+    "event":{   
+        "id":5,     
+        "description":"one more test event",    
+        "selected":"1",     
+        "sphere_id":null    
+        },
+    "event_type_warning":"could_not_attach_event_type event type updated",      
+    "event_types":[     
+        {"id":11,"description":"\u041e\u0448\u0438\u0431\u043a\u0438"},     
+        {"id":12,"description":"\u0427\u0443\u0432\u0441\u0442\u0432\u043e \u0432\u0438\u043d\u044b"}   
+        ]   
+}    
+
+**error responce example:**     
+{   
+    "error":{   
+        "selected":["The selected field must be true or false."]    
+    }   
+}   
+status: 422 Unprocessable Entity    
+
+{   
+    "error":{   
+        "description":["The description has already been taken."]    
+    }   
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"could_not_add_event"}     
 status: 500 Internal Server Error

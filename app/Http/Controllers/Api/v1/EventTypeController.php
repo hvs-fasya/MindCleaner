@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -50,6 +51,7 @@ class EventTypeController extends Controller
             }
         } catch (\Exception $e) {
             // something went wrong
+            Log::error($e->getMessage());
             return response()->json(['error' => 'could_not_get_event_types'], 500);
         }
         return response()->json(['event_types' => $result]);
@@ -81,6 +83,7 @@ class EventTypeController extends Controller
             );
         } catch (\Exception $e) {
             // something went wrong
+            Log::error($e->getMessage());
             return response()->json(['error' => 'could_not_add_event_type'], 500);
         }
         return response()->json(['event_type' => $result]);
@@ -131,6 +134,7 @@ class EventTypeController extends Controller
             return response()->json(['error' => 'could_not_destroy_event_type'], 500);
         } catch (\Exception $e) {
             // something went wrong
+            Log::error($e->getMessage());
             return response()->json(['error' => 'could_not_destroy_event_type'], 500);
         }
     }
@@ -183,6 +187,7 @@ class EventTypeController extends Controller
             return response()->json(['error' => 'could_not_update_event_type', 'warning' => 'try_to_synchronize'], 500);
         } catch (\Exception $e) {
             // something went wrong
+            Log::error($e->getMessage());
             return response()->json(['error' => 'could_not_update_event_type'], 500);
         }
     }
