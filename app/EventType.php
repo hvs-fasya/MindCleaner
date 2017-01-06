@@ -10,6 +10,14 @@ class EventType extends Model
         'description','user_id'
     ];
 
+    /**
+     * The Events that belong to the EventType.
+     */
+    public function events()
+    {
+        return $this->belongsToMany('App\Event');
+    }
+
     public function is_common()
     {
         if(is_null($this->user_id)){
