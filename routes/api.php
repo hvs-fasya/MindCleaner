@@ -31,6 +31,11 @@ Route::group([
     Route::post('update_event_type_remote',
         'Api\v1\EventTypeController@update_event_type_remote');
     //spheres
+    Route::get('get_spheres_remote', 'Api\v1\SphereController@get_spheres_remote');
+    Route::post('add_sphere_remote', 'Api\v1\SphereController@add_sphere_remote');
+    Route::delete('destroy_sphere_remote/{id?}/{description?}', 'Api\v1\SphereController@destroy_sphere_remote');
+    Route::post('update_sphere_remote',
+        'Api\v1\SphereController@update_sphere_remote');
     //events
     Route::get('user', function () {
         return 'authenticate';

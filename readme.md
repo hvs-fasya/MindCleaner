@@ -21,6 +21,12 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 **_destroy_event_type_remote_**   
 **_update_event_type_remote_**
 
+### Spheres
+**_get_spheres_remote_**    
+**_add_sphere_remote_**     
+**_destroy_sphere_remote_**   
+**_update_sphere_remote_**
+
 ## Authentification
 
 ### Workflow:   
@@ -35,7 +41,7 @@ Documentation for the Laravel framework can be found on the [Laravel website](ht
 resetPassword functionality     
 mail notifiers for register and so on events    
 'passport' for application - not to allow somebody else register user   
-delete_user_remote  
+delete_user_remote - softDelete     
 
 ### Possible token errors
 {"error": "token_invalid"}
@@ -205,6 +211,9 @@ status: 500 Internal Server Error
 
 ## Event Types
 
+### todo:    
+softDelete  
+
 ## get_event_types_remote
 
 **method:** GET    
@@ -212,7 +221,7 @@ status: 500 Internal Server Error
 **return:** (array) event_types
 
 **request example:**    
-http://localhost:8000/api/v1/et_event_types_remote?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+http://localhost:8000/api/v1/get_event_types_remote?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
 
 **successfull responce example:**   
 {   
@@ -412,6 +421,223 @@ status: 422 Unprocessable Entity
 
 {   
     "error":"could_not_update_event_type",    
+    "warning":"try_to_synchronize"
+}     
+status: 500 Internal Server Error   
+
+
+## Spheres
+
+### todo:    
+softDelete  
+
+## get_spheres_remote
+
+**method:** GET    
+*parameters:**     no parameters    
+**return:** (array) spheres
+
+**request example:**    
+http://localhost:8000/api/v1/get_spheres_remote?query=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2dldF9hY2Nlc3NfdG9rZW4iLCJpYXQiOjE0ODMyOTA5NjMsImV4cCI6MTQ4MzI5MTU2MywibmJmIjoxNDgzMjkwOTYzLCJqdGkiOiJhYjcyMjdjZjFlNzQ2ZGYxOTM2NmUxMDM5NWE3YWExYyJ9.SkC9MBvp_iq7ZosW9tgFSAqgN10c8xjrIJ-1pTD6zak  
+
+**successfull responce example:**   
+{   
+  "spheres": [  
+        {
+          "id": 1,  
+          "description": "Выживание (еда, тело, дом)",  
+          "common": true,   
+          "updated_at": null    
+        },  
+        {   
+          "id": 2,  
+          "description": "Удовольствие (секс, деньги)",     
+          "common": true,   
+          "updated_at": null    
+        },  
+        {   
+          "id": 3,  
+          "description": "Воля (работа, карьера)",  
+          "common": true,   
+          "updated_at": null    
+        },  
+        {      
+          "id": 4,  
+          "description": "Любовь, радость",     
+          "common": true,   
+          "updated_at": null    
+        },  
+        {   
+          "id": 5,  
+          "description": "Правда, самовыражение",   
+          "common": true,   
+          "updated_at": null    
+        },      
+        {
+       "id": 26,    
+       "description": "one more test sphere",      
+       "common": false,     
+       "updated_at": "2017-01-04 14:04:46"      
+        }   
+  ]     
+}  
+
+**error responce example:**     
+{"error": "token_invalid"}   
+status: 400 Bad Request
+
+{"error": "token_not_provided"}   
+status: 400 Bad Request
+
+{"error":"could_not_get_spheres"}     
+status: 500 Internal Server Error   
+
+## function: add_sphere_remote      
+
+**method:** POST    
+**parameters:**     
+    (string) description - required|max:255|unique for this user and commons  
+    
+**return:** (object) new sphere  
+
+**request example:**    
+http://localhost:8000/api/v1/add_sphere_remote       
+**form-data:**      
+    description:      "new sphere"     
+            
+**successfull responce example:**   
+{   
+    "sphere":{
+        "id":26,    
+        "description":"one more test sphere",   
+        "common":false   
+     }  
+}      
+
+**error responce example:**     
+{   
+    "error":{   
+        "description":["The description field is required."]    
+    }   
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "description":["The description has already been taken."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"could_not_add_sphere"}     
+status: 500 Internal Server Error
+
+## function: destroy_sphere_remote      
+
+**method:** DELETE    
+**parameters:**     
+    (integer) sphere_id - required|integer
+    (string) description - required|max:255  
+  
+**return:**   (string) result   
+
+**request example:**    
+http://localhost:8000/api/v1/destroy_sphere_remote/27/new test sphere   
+
+**successfull responce example:**   
+{   
+    "warning":"need_to_synchronize_spheres",    
+    "result":"success"  
+}   
+warning возникает если совпадает description и user_id но почему-то не совпадает id самого sphere   
+при этом, наверное, сдедует запросить свежие данные - get_spheres_remote    
+несмотря на warning найденная запись удаляется      
+
+{"result":"success"}   
+
+**error responce example:**     
+
+{   
+     "error":{  
+        "description":["The description field is required."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "id":["The id must be an integer"]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"sphere_not_found"}    
+status: 404 Not Found   
+
+{"error":"can_not_destroy_common_sphere"}   
+status: 422 Unprocessable Entity    
+
+{"error":"can_not_destroy_alien_sphere"}  
+status: 422 Unprocessable Entity    
+
+{"error":"could_not_destroy_shere"}     
+status: 500 Internal Server Error   
+
+## function: update_sphere_remote      
+
+**method:** POST    
+**parameters:**     
+    (integer) sphere_id - required|integer
+    (string) old_description - required|max:255  
+    (string) new_description - required|max:255  
+  
+**return:**   (string) result   
+
+**request example:**    
+http://localhost:8000/api/v1/update_sphere_remote 
+**form-data:**      
+     id:      26    
+     old_description: "Мысли о лишнем и недостаточном весе" 
+     new_description: "sphere updated"
+    
+**successfull responce example:**   
+{   
+    "warning":"need_to_synchronize_spheres",    
+    "result":"success"  
+}   
+warning возникает если совпадает old_description и user_id но почему-то не совпадает id самого sphere   
+при этом, наверное, сдедует запросить свежие данные - get_spheres_remote    
+несмотря на warning найденная запись update'тся       
+
+{"result":"success"}   
+
+**error responce example:**     
+
+{   
+     "error":{  
+        "description":["The old description field is required."]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{   
+     "error":{  
+        "id":["The id must be an integer"]   
+     }  
+}   
+status: 422 Unprocessable Entity    
+
+{"error":"sphere_not_found"}    
+status: 404 Not Found   
+
+{"error":"can_not_update_common_sphere"}   
+status: 422 Unprocessable Entity    
+
+{"error":"can_not_update_alien_sphere"}  
+status: 422 Unprocessable Entity    
+
+{   
+    "error":"could_not_update_sphere",    
     "warning":"try_to_synchronize"
 }     
 status: 500 Internal Server Error
