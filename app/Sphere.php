@@ -10,6 +10,14 @@ class Sphere extends Model
         'description','user_id'
     ];
 
+    /**
+     * Get the events for the sphere.
+     */
+    public function events()
+    {
+        return $this->hasMany('App\Event');
+    }
+
     public function is_common()
     {
         if(is_null($this->user_id)){
